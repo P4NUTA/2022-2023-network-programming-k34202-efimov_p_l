@@ -6,7 +6,7 @@ Group: K34202
 Author: Efimov Pavel Leonidovich  
 Lab: Lab1  
 Date of create: 28.11.2022  
-Date of finished:  
+Date of finished: 08.12.2022
 
 Цель работы: С помощью Ansible настроить несколько сетевых устройств и собрать информацию о них. Правильно собрать файл Inventory.
 
