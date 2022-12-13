@@ -6,7 +6,7 @@ Group: K34202
 Author: Efimov Pavel Leonidovich  
 Lab: Lab3  
 Date of create: 12.12.2022  
-Date of finished:
+Date of finished: 13.12.2022
 
 Цель работы: Развертывание Netbox, сеть связи как источник правды в системе технического учета Netbox.
 
