@@ -1,0 +1,62 @@
+# playbook was divided into 3 parts at lab
+---
+# Start read info from CSV
+- name: read
+  hosts: localhost
+  tasks:
+    - name: get data from csv file
+      community.general.read_csv:
+        path: /etc/ansible/netbox_devices.csv
+        key: 'ID'
+      register: routers
+      delegate_to: localhost
+
+    - name: checking
+      debug:
+        msg: 'Router {{ routers.dict[ item ].Name }}'
+      loop:
+        - "1"
+        - "2"
+
+    - name: set_var
+      copy:
+        dest: '/etc/ansible/R{{ item }}.yaml'
+        content: 'name: {{ routers.dict[ item ].Name }}'
+      loop:
+        - "1"
+        - "2"
+
+# Write routers name
+- name: write router name
+  hosts: routers
+  gather_facts: false
+  vars_files:
+    - R1.yaml
+    - R2.yaml
+  tasks:
+    - name: commands
+      community.routeros.command:
+        commands:
+          - /system identity set name={{ name }}
+      register: system_resource_print
+    - name: print output
+      ansible.builtin.debug:
+        var: system_resource_print.stdout_lines
+
+# Add data to Netbox
+- name: put data to netbox
+  hosts: routers
+  connection: local
+  tasks:
+    - name: add data
+      netbox.netbox.netbox_device:
+        netbox_url: http://10.129.0.22:8000/
+        netbox_token: '0123456789abcdef0123456789abcdef01234567'
+        validate_certs: False
+        data:
+          name: "{{ inventory_hostname }}"
+          serial: "{{ inventory_hostname }}"
+          device_type: 1
+          device_role: "router"
+          site: 1
+        state: present
